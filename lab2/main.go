@@ -9,6 +9,7 @@ import (
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
+	defer fmt.Println("Нажмите enter для выхода")
 	defer reader.ReadString('\n')
 
 	fmt.Println("Введите выражение")
@@ -18,8 +19,8 @@ func main() {
 		return
 	}
 	expression = strings.TrimSpace(expression)
-	fmt.Println(expression)
+	fmt.Println("Ваше выражение:", expression)
 
-	Calc(expression)
+	fmt.Println(Tokenize(expression))
 
 }

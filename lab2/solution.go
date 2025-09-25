@@ -1,25 +1,33 @@
 package main
 
 import (
+	"errors"
 	"slices"
 )
 
-func Tokenize(str string) []string {
+func Tokenize(str string) ([]string, error) {
 	runes := []rune(str)
 	operations := []rune{'+', '-', '/', '*'}
 	numbers := []rune{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'}
 
-	// operationsStack := []rune{}
 	tokens := []string{}
+
+	if len(runes) != 0 && runes[len(runes)-1] != '=' {
+		return []string{}, errors.New("the expression must end with '=' sign")
+	}
+
+	if len(runes) != 0 {
+		runes = runes[:len(runes)-1]
+	}
 
 	for i := 0; i < len(runes); {
 		r := runes[i]
 		if slices.Contains(operations, r) {
-			i++
 			tokens = append(tokens, string(r))
+			i++
 		} else if r == '(' {
-			i++
 			tokens = append(tokens, string(r))
+			i++
 		} else if r == ')' {
 			tokens = append(tokens, string(r))
 			i++
@@ -32,11 +40,43 @@ func Tokenize(str string) []string {
 			}
 			tokens = append(tokens, string(runes[i:j]))
 			i = j
-
-		} else {
+		} else if r == ' ' {
 			i++
+		} else {
+			return []string{}, errors.New("unknown char in expression")
 		}
 	}
 
-	return tokens
+	return tokens, nil
+}
+
+func Calc(tokens []string) (float64, error) {
+	// return 0.0, errors.New("divide by zero")
+
+	operationsStack := []string{}
+	stack := []string{}
+
+	for t := range tokens {
+
+	}
+}
+
+func sum(a float64, b float64) float64 {
+	return a + b
+}
+
+func sub(a float64, b float64) float64 {
+	return a - b
+}
+
+func mul(a float64, b float64) float64 {
+	return a * b
+}
+
+func div(a float64, b float64) (float64, error) {
+	if b == 0 {
+		return 0.0, errors.New("divide by zero")
+	} else {
+		return a / b, nil
+	}
 }

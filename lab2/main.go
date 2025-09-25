@@ -21,6 +21,11 @@ func main() {
 	expression = strings.TrimSpace(expression)
 	fmt.Println("Ваше выражение:", expression)
 
-	fmt.Println(Tokenize(expression))
+	tokens, err := Tokenize(expression)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("tokens:", tokens)
+	}
 
 }

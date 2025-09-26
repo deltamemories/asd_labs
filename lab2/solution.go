@@ -56,8 +56,35 @@ func Calc(tokens []string) (float64, error) {
 	operationsStack := []string{}
 	stack := []string{}
 
-	for t := range tokens {
+	for _, t := range tokens {
 
+	}
+}
+
+func ToRpn(tokens []string) ([]string, error) {
+	brackets := []string{"(", ")"}
+	operations := []string{"+", "-", "/", "*"}
+	numbers := []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."}
+
+	prec := map[string]int{
+		"+": 0,
+		"-": 0,
+		"*": 1,
+		"/": 1,
+	}
+
+	stack := []string{}
+	queue := []string{}
+
+	for _, t := range tokens {
+		if slices.Contains(numbers, t) {
+			queue = append(queue, t)
+		}
+		if slices.Contains(operations, t) {
+			for {
+				// len(stack) > 0 && stack[len(stack)-1]
+			}
+		}
 	}
 }
 

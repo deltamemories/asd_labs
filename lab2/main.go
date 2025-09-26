@@ -9,8 +9,9 @@ import (
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	defer fmt.Println("Нажмите enter для выхода")
+
 	defer reader.ReadString('\n')
+	defer fmt.Println("Нажмите enter для выхода")
 
 	fmt.Println("Введите выражение")
 	expression, err := reader.ReadString('\n')
@@ -27,5 +28,9 @@ func main() {
 	} else {
 		fmt.Println("tokens:", tokens)
 	}
+
+	rpn := ToRpn(tokens)
+	fmt.Println("RPN:")
+	fmt.Println(rpn)
 
 }

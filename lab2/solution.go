@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"slices"
 )
 
@@ -51,14 +50,14 @@ func Tokenize(str string) ([]string, error) {
 	return tokens, nil
 }
 
-// func Calc(tokens []string) (float64, error) {
+// func CalcRpn(tokens []string) (float64, error) {
 // 	// return 0.0, errors.New("divide by zero")
 
 // 	operationsStack := []string{}
 // 	stack := []string{}
 
 // 	for _, t := range tokens {
-
+// 		if
 // 	}
 // }
 
@@ -77,17 +76,11 @@ func ToRpn(tokens []string) []string {
 	queue := []string{}
 
 	for _, t := range tokens {
-		fmt.Println("---------")
-		fmt.Println(t, stack, queue)
-		fmt.Println("---------")
-
 		if slices.Contains(numbers, t) {
 			queue = append(queue, t)
 		}
 
 		if slices.Contains(operations, t) {
-			fmt.Println(prec[stack[len(stack)-1]])
-			// len(stack) > 0 && prec[stack[len(stack)-1]] >= prec[t]
 			for len(stack) > 0 {
 				p, ok := prec[stack[len(stack)-1]]
 
@@ -108,6 +101,7 @@ func ToRpn(tokens []string) []string {
 		if t == "(" {
 			stack = append(stack, t)
 		}
+
 		if t == ")" {
 			for len(stack) > 0 && stack[len(stack)-1] != "(" {
 				queue = append(queue, stack[len(stack)-1])
@@ -144,3 +138,7 @@ func div(a float64, b float64) (float64, error) {
 		return a / b, nil
 	}
 }
+
+// func isNumber() bool {
+
+// }

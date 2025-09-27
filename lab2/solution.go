@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"slices"
 )
 
@@ -66,24 +67,40 @@ func ToRpn(tokens []string) []string {
 	numbers := []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."}
 
 	prec := map[string]int{
-		"+": 0,
-		"-": 0,
-		"*": 1,
-		"/": 1,
+		"+": 1,
+		"-": 1,
+		"*": 2,
+		"/": 2,
 	}
 
 	stack := []string{}
 	queue := []string{}
 
 	for _, t := range tokens {
+		fmt.Println("---------")
+		fmt.Println(t, stack, queue)
+		fmt.Println("---------")
+
 		if slices.Contains(numbers, t) {
 			queue = append(queue, t)
 		}
 
 		if slices.Contains(operations, t) {
-			for len(stack) > 0 && prec[stack[len(stack)-1]] >= prec[t] {
-				queue = append(queue, stack[len(stack)-1])
-				stack = stack[:len(stack)-1]
+			fmt.Println(prec[stack[len(stack)-1]])
+			// len(stack) > 0 && prec[stack[len(stack)-1]] >= prec[t]
+			for len(stack) > 0 {
+				p, ok := prec[stack[len(stack)-1]]
+
+				if !ok {
+					break
+				}
+
+				if p >= prec[t] {
+					queue = append(queue, stack[len(stack)-1])
+					stack = stack[:len(stack)-1]
+				} else {
+					break
+				}
 			}
 			stack = append(stack, t)
 		}

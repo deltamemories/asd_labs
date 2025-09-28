@@ -14,7 +14,7 @@ func TestCalc(t *testing.T) {
 
 	// assert
 	if act != exp {
-		t.Errorf("Calc(%s) = %f; expected: %d", s, act, exp)
+		t.Errorf("Calc(%s) = %f; expected: %f", s, act, exp)
 	} else if err != nil {
 		t.Error(err)
 	}

@@ -17,9 +17,10 @@ func TestCalc(t *testing.T) {
 		{"only_equal_sign", "=", 0.0, false},
 		{"random_text_with_equal_sign", "wiesfknds5+*-8=", 0.0, true},
 		{"two_equal_signs", "1+3==", 0.0, true},
+		{"without_equal_sign", "5+9-3*2", 0.0, true},
+		{"divide_by_zero_1", "55/0=", 0.0, true},
+		{"divide_by_zero_2", "4/(10-2*5)=", 0.0, true},
 		{"unary_minus_sign", "-3+5=", 2, false},
-		{"divide_by_zero_1", "55/0", 0.0, false},
-		{"divide_by_zero_2", "4/(10-2*5)", 0.0, true},
 	}
 
 	// act

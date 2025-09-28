@@ -22,15 +22,12 @@ func main() {
 	expression = strings.TrimSpace(expression)
 	fmt.Println("Ваше выражение:", expression)
 
-	tokens, err := Tokenize(expression)
+	ans, err := Calc(expression)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Ошибка:", err)
 	} else {
-		fmt.Println("tokens:", tokens)
+		fmt.Println("Результат:")
+		fmt.Println(ans)
 	}
-
-	rpn := ToRpn(tokens)
-	fmt.Println("RPN:")
-	fmt.Println(rpn)
 
 }

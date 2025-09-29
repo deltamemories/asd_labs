@@ -29,6 +29,10 @@ func tokenize(str string) ([]string, error) {
 
 	tokens := []string{}
 
+	if len(runes) == 0 {
+		return []string{}, errors.New("empty string")
+	}
+
 	if len(runes) != 0 && runes[len(runes)-1] != '=' {
 		return []string{}, errors.New("the expression must end with '=' sign")
 	}
@@ -40,8 +44,14 @@ func tokenize(str string) ([]string, error) {
 	for i := 0; i < len(runes); {
 		r := runes[i]
 		if slices.Contains(operations, r) {
-			tokens = append(tokens, string(r))
-			i++
+			if r == '-' && (i == 0 || (i > 0 && !slices.Contains(numbers, runes[i-1]))) {
+				tokens = append(tokens, "0")
+				tokens = append(tokens, string(r))
+				i++
+			} else {
+				tokens = append(tokens, string(r))
+				i++
+			}
 		} else if r == '(' {
 			tokens = append(tokens, string(r))
 			i++

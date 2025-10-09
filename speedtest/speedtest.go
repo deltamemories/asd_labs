@@ -1,5 +1,7 @@
 package speedtest
 
+// speedtest for sorting algorithms (lab4 – lab12)
+
 import (
 	"fmt"
 	"math/rand"

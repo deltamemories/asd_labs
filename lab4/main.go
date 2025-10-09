@@ -1,22 +1,16 @@
 package main
 
 import (
+	"asd_labs/speedtest"
 	"fmt"
-	"math/rand"
-	"time"
 )
 
 func main() {
-	arr := make([]int, 10_000)
-	for i := range arr {
-		arr[i] = int(rand.Int31n(1000000000))
-	}
+	arr := speedtest.NewRandomIntArray(10_000, 100)
+	fmt.Printf("Array: %v\n", arr)
 
-	t := time.Now()
-	sortedArr := Sort(arr)
-	fmt.Println(sortedArr)
-	fmt.Println("Time:", time.Since(t))
-
+	sortedArr, time := speedtest.Speedtest(arr, Sort)
+	fmt.Printf("Sorted array: %v\n%s\n", sortedArr, time)
 }
 
 func Sort(arr []int) []int {

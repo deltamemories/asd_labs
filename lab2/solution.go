@@ -29,9 +29,9 @@ func Calc(str string) (float64, error) {
 func tokenize(str string) ([]string, error) {
 	runes := []rune(str)
 	operations := []rune{'+', '-', '/', '*'}
-	numbers := []rune{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'}
+	numberSymbols := []rune{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'}
 
-	tokens := []string{}
+	var tokens []string
 
 	if len(runes) == 0 {
 		return []string{}, errors.New("empty string")
@@ -48,18 +48,16 @@ func tokenize(str string) ([]string, error) {
 	for i := 0; i < len(runes); {
 		r := runes[i]
 		if slices.Contains(operations, r) {
-			if r == '-' && (i == 0 || (i > 0 && !slices.Contains(numbers, runes[i-1]))) {
-				tokens = append(tokens, "(")
+			if r == '-' && (i == 0 || (i > 0 && !slices.Contains(numberSymbols, runes[i-1]))) {
 				tokens = append(tokens, "0")
 				tokens = append(tokens, string(r))
-				tokens = append(tokens, ")")
 				i++
 			} else {
 				tokens = append(tokens, string(r))
 				i++
 			}
 		} else if r == '(' {
-			if i > 0 && (slices.Contains(numbers, runes[i-1]) || runes[i-1] == ')') {
+			if i > 0 && (slices.Contains(numberSymbols, runes[i-1]) || runes[i-1] == ')') {
 				tokens = append(tokens, "*")
 				tokens = append(tokens, string(r))
 				i++
@@ -68,7 +66,7 @@ func tokenize(str string) ([]string, error) {
 				i++
 			}
 		} else if r == ')' {
-			if i+1 < len(runes) && (slices.Contains(numbers, runes[i+1]) || runes[i+1] == '(') {
+			if i+1 < len(runes) && (slices.Contains(numberSymbols, runes[i+1]) || runes[i+1] == '(') {
 				tokens = append(tokens, string(r))
 				tokens = append(tokens, "*")
 				i++
@@ -76,10 +74,10 @@ func tokenize(str string) ([]string, error) {
 				tokens = append(tokens, string(r))
 				i++
 			}
-		} else if slices.Contains(numbers, r) {
+		} else if slices.Contains(numberSymbols, r) {
 			j := i + 1
 			for ; j < len(runes); j++ {
-				if !slices.Contains(numbers, runes[j]) {
+				if !slices.Contains(numberSymbols, runes[j]) {
 					break
 				}
 			}
@@ -98,7 +96,7 @@ func tokenize(str string) ([]string, error) {
 func calcRpn(tokens []string) (float64, error) {
 	operations := []string{"+", "-", "/", "*"}
 
-	stack := []string{}
+	var stack []string
 
 	if len(tokens) == 0 {
 		return 0.0, nil
@@ -110,7 +108,7 @@ func calcRpn(tokens []string) (float64, error) {
 			stack = append(stack, t)
 		} else if slices.Contains(operations, t) {
 			if len(stack) < 2 {
-				return 0.0, errors.New("no enought operands for operator")
+				return 0.0, errors.New("no enough operands for operator")
 			}
 
 			b, err := strconv.ParseFloat(stack[len(stack)-1], 64)
@@ -158,15 +156,15 @@ func calcRpn(tokens []string) (float64, error) {
 func toRpn(tokens []string) ([]string, error) {
 	operations := []string{"+", "-", "/", "*"}
 
-	prec := map[string]int{
+	priority := map[string]int{
 		"+": 1,
 		"-": 1,
 		"*": 2,
 		"/": 2,
 	}
 
-	stack := []string{}
-	queue := []string{}
+	var stack []string
+	var queue []string
 
 	for _, t := range tokens {
 		_, err := strconv.ParseFloat(t, 64)
@@ -174,13 +172,13 @@ func toRpn(tokens []string) ([]string, error) {
 			queue = append(queue, t)
 		} else if slices.Contains(operations, t) {
 			for len(stack) > 0 {
-				p, ok := prec[stack[len(stack)-1]]
+				p, ok := priority[stack[len(stack)-1]]
 
 				if !ok {
 					break
 				}
 
-				if p >= prec[t] {
+				if p >= priority[t] {
 					queue = append(queue, stack[len(stack)-1])
 					stack = stack[:len(stack)-1]
 				} else {
@@ -201,7 +199,7 @@ func toRpn(tokens []string) ([]string, error) {
 				return []string{}, errors.New("incorrect brackets")
 			}
 		} else {
-			return []string{}, errors.New("inknown char")
+			return []string{}, errors.New("unknown char")
 		}
 
 	}

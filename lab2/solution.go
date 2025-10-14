@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"slices"
 	"strconv"
 )
@@ -12,7 +13,7 @@ func tokenize(text string) ([]interface{}, error) {
 	symbolsBeforeUnaryMinus := []rune{'+', '*', '/', '('}
 	runes := []rune(text)
 
-	answer := []interface{}{}
+	var answer []interface{}
 	i := 0
 	for i < len(runes) {
 		r := runes[i]
@@ -53,4 +54,79 @@ func tokenize(text string) ([]interface{}, error) {
 		}
 	}
 	return answer, nil
+}
+
+func toRpn(tokens []interface{}) ([]interface{}, error) {
+	priority := map[string]int{
+		"+": 1,
+		"-": 1,
+		"/": 2,
+		"*": 2,
+	}
+	operationSymbols := []string{"+", "-", "/", "*"}
+
+	stack := []interface{}{}
+	queue := []interface{}{}
+
+	for i, t := range tokens {
+		switch t := t.(type) {
+		case float64:
+			queue = append(queue, t)
+		case string:
+			switch {
+			case t == "_":
+				if i+1 < len(tokens) {
+					n, ok := tokens[i+1].(float64)
+					if !ok {
+						return nil, errors.New("there should be a number after the minus")
+					} else {
+						tokens[i+1] = -1 * n
+					}
+				} else {
+					return nil, errors.New("there should be a number after the minus")
+				}
+			case slices.Contains(operationSymbols, t):
+				for len(stack) > 0 {
+					op, ok := stack[len(stack)-1].(string)
+					if !ok {
+						break
+					}
+
+					p, ok := priority[op]
+					if !ok {
+						break
+					}
+
+					if p >= priority[t] {
+						queue = append(queue, stack[len(stack)-1])
+						stack = stack[:len(stack)-1]
+					} else {
+						break
+					}
+				}
+				stack = append(stack, t)
+			case t == "(":
+				stack = append(stack, t)
+			case t == ")":
+				for len(stack) > 0 && stack[len(stack)-1] != "(" {
+					queue = append(queue, stack[len(stack)-1])
+					stack = stack[:len(stack)-1]
+				}
+				if len(stack) > 0 {
+					stack = stack[:len(stack)-1]
+				} else {
+					return nil, errors.New("incorrect brackets")
+				}
+			default:
+				return nil, errors.New(fmt.Sprintf("unknown token: %s", t))
+			}
+
+		}
+	}
+
+	for len(stack) > 0 {
+		queue = append(queue, stack[len(stack)-1])
+		stack = stack[:len(stack)-1]
+	}
+	return queue, nil
 }

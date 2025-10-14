@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math"
 	"slices"
 	"strconv"
 )
@@ -129,4 +130,44 @@ func toRpn(tokens []interface{}) ([]interface{}, error) {
 		stack = stack[:len(stack)-1]
 	}
 	return queue, nil
+}
+
+func add(a, b float64) (float64, error) {
+	f := a + b
+	if math.IsInf(f, 0) {
+		return 0, errors.New("overflow")
+	} else {
+		return f, nil
+	}
+}
+
+func sub(a, b float64) (float64, error) {
+	f := a - b
+	if math.IsInf(f, 0) {
+		return 0, errors.New("overflow")
+	} else {
+		return f, nil
+	}
+}
+
+func mul(a, b float64) (float64, error) {
+	f := a * b
+	if math.IsInf(f, 0) {
+		return 0, errors.New("overflow")
+	} else {
+		return f, nil
+	}
+}
+
+func div(a, b float64) (float64, error) {
+	if b == 0 {
+		return 0, errors.New("division by zero")
+	} else {
+		f := a / b
+		if math.IsInf(f, 0) {
+			return 0, errors.New("overflow")
+		} else {
+			return f, nil
+		}
+	}
 }

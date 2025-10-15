@@ -8,11 +8,36 @@ import (
 	"strconv"
 )
 
-func tokenize(text string) ([]interface{}, error) {
+func Calc(text string) (float64, error) {
+	runes := []rune(text)
+	if len(runes) == 0 {
+		return 0.0, errors.New("string is empty")
+	}
+	if runes[len(runes)-1] != '=' {
+		return 0.0, errors.New("string must contain '=' at the end")
+	}
+	runes = runes[:len(runes)-1]
+
+	t, err := tokenize(runes)
+	if err != nil {
+		return 0.0, err
+	}
+
+	tRpn, err := toRpn(t)
+	if err != nil {
+		return 0.0, err
+	}
+	ans, err := calcRpn(tRpn)
+	if err != nil {
+		return 0.0, err
+	}
+	return ans, nil
+}
+
+func tokenize(runes []rune) ([]interface{}, error) {
 	numberSymbols := []rune{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'}
 	operatorSymbols := []rune{'+', '-', '*', '/', '(', ')'}
 	symbolsBeforeUnaryMinus := []rune{'+', '*', '/', '('}
-	runes := []rune(text)
 
 	var answer []interface{}
 	i := 0
@@ -170,4 +195,74 @@ func div(a, b float64) (float64, error) {
 			return f, nil
 		}
 	}
+}
+
+func calcRpn(tokens []interface{}) (float64, error) {
+	operationSymbols := []string{"+", "-", "/", "*"}
+	var stack []float64
+
+	if len(tokens) == 0 {
+		return 0, errors.New("empty tokens")
+	}
+
+	for _, t := range tokens {
+		switch t := t.(type) {
+		case float64:
+			stack = append(stack, t)
+		case string:
+			if slices.Contains(operationSymbols, t) {
+
+				if len(stack) < 2 {
+					return 0, errors.New("no enough operands for operator")
+				}
+
+				b := stack[len(stack)-1]
+				stack = stack[:len(stack)-1]
+				a := stack[len(stack)-1]
+				stack = stack[:len(stack)-1]
+
+				var r float64
+				var err error
+				switch t {
+				case "+":
+					r, err = add(a, b)
+					if err != nil {
+						return 0, err
+					}
+				case "-":
+					r, err = sub(a, b)
+					if err != nil {
+						return 0, err
+					}
+				case "*":
+					r, err = mul(a, b)
+					if err != nil {
+						return 0, err
+					}
+				case "/":
+					r, err = div(a, b)
+					if err != nil {
+						return 0, err
+					}
+				}
+				stack = append(stack, r)
+
+			} else {
+				return 0, errors.New("unknown token")
+			}
+		default:
+			return 0, errors.New(fmt.Sprintf("unknown token: %s", t))
+		}
+	}
+
+	if len(stack) > 1 {
+		return 0, errors.New("too many operands")
+	}
+
+	if len(stack) == 0 {
+		return 0, errors.New("empty stack")
+	}
+
+	answer := stack[0]
+	return answer, nil
 }

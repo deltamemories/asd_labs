@@ -91,8 +91,8 @@ func toRpn(tokens []interface{}) ([]interface{}, error) {
 	}
 	operationSymbols := []string{"+", "-", "/", "*"}
 
-	stack := []interface{}{}
-	queue := []interface{}{}
+	var stack []interface{}
+	var queue []interface{}
 
 	for i, t := range tokens {
 		switch t := t.(type) {

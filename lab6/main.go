@@ -13,7 +13,7 @@ func main() {
 	fmt.Printf("Sorted array: %v\n%s\n", sortedArr, time)
 }
 
-func Sort(arr []int) []int { // fix this
+func Sort(arr []int) []int {
 	l := len(arr)
 	for i := 0; i < l-1; i++ {
 		for j := i + 1; j < l; j++ {

@@ -75,6 +75,9 @@ func tokenize(runes []rune) ([]interface{}, error) {
 			}
 			answer = append(answer, n)
 			i = j
+		case r == ' ':
+			// do nothing
+			i++
 		default:
 			return nil, errors.New("unknown symbol")
 		}

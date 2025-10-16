@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	arr := speedtest.NewRandomIntArray(10_000, 100)
+	arr := speedtest.NewRandomIntArray(10, 100)
 	fmt.Printf("Array: %v\n", arr)
 
 	sortedArr, time := speedtest.Speedtest(arr, Sort)
@@ -15,8 +15,8 @@ func main() {
 
 func Sort(arr []int) []int { // fix this
 	l := len(arr)
-	for i := 0; i < l-2; i++ {
-		for j := i + 1; i < l-1; j++ {
+	for i := 0; i < l-1; i++ {
+		for j := i + 1; j < l; j++ {
 			if arr[i] > arr[j] {
 				arr[i], arr[j] = arr[j], arr[i]
 			}

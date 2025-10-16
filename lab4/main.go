@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	arr := speedtest.NewRandomIntArray(10_000, 100)
+	arr := speedtest.NewRandomIntArray(10, 100)
 	fmt.Printf("Array: %v\n", arr)
 
 	sortedArr, time := speedtest.Speedtest(arr, Sort)
